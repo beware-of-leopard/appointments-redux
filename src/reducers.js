@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import {UPDATE_APPOINTMENT, TOGGLE_MODAL, ADD_APPOINTMENT} from './actions/action_types'
 
 
 let apptTimes = [9,10,11,12,1,2,3,4,5];
@@ -12,7 +13,7 @@ function makeAppointmentReducer(state = {appointments: apptObjects, apptToEdit: 
 
   switch (action.type) {
 
-  case 'ADD_APPOINTMENT':
+  case ADD_APPOINTMENT:
   	let {appointments} = state;
   	let {indexToUpdate, name, phoneNumber, time} = action.payload;
 
@@ -22,7 +23,7 @@ function makeAppointmentReducer(state = {appointments: apptObjects, apptToEdit: 
   										  .concat(appointments.slice(indexToUpdate +1))
     return {...state, appointments: updatedappointments}
 
-  case 'UPDATE_APPOINTMENT':
+  case UPDATE_APPOINTMENT:
   	let {name_to_edit, phoneNumber_to_edit, time_to_edit, index} = action.payload;
     return {...state, apptToEdit: {name: name_to_edit, phoneNumber: phoneNumber_to_edit, time: time_to_edit, index: index}}
   
@@ -35,7 +36,7 @@ function makeAppointmentReducer(state = {appointments: apptObjects, apptToEdit: 
 function modalReducer(state = {showModal: false}, action){
 
   switch (action.type){
-    case 'TOGGLE_MODAL':
+    case TOGGLE_MODAL:
       return {
         showModal: !state.showModal
       }
