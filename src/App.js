@@ -2,17 +2,13 @@ import React, { Component } from 'react'
 import './App.css'
 import Modal from './Modal.js'
 import { connect } from "react-redux"
+import {bindActionCreators} from 'redux'
+import {updateAppointment} from './actions/action_creators'
+import {toggleModal} from './actions/action_creators'
+import {addAppointment} from './actions/action_creators'
 
 class App extends Component {
-  constructor(props){
-    super(props);
 
-    this.state = {
-      apptInfo: null,
-      apptEditNumber: null,
-      showModal: false
-    }
-  }
   getApptTimes(){
     
     let {appointments} = this.props.stateAsProp.makeAppointmentReducer;
@@ -30,21 +26,18 @@ class App extends Component {
   }
   handleEdit(apptInfo, index){
 
-    this.props.dispatch({type: "UPDATE_APPOINTMENT", payload: {"name_to_edit": apptInfo.name, "phoneNumber_to_edit": apptInfo.phoneNumber, "time_to_edit":apptInfo.time, "index":index}})
-    
-    this.setState({ showModal:true})
+    this.props.updateAppointment(apptInfo, index)
+    this.props.toggleModal({type: "TOGGLE_MODAL"})
   }
 
   handleUpdate(indexToUpdate, name, phoneNumber, time){
 
-    this.props.dispatch({type: "ADD_APPOINTMENT", payload: {"name": name, "phoneNumber": phoneNumber, "time":time, "indexToUpdate":indexToUpdate}})
-
-    this.setState({showModal: false})
-
+    this.props.addAppointment(indexToUpdate, name, phoneNumber, time)
+    this.props.toggleModal({type: "TOGGLE_MODAL"})
   }
 
   closeModal(){
-    this.setState({showModal:false})
+    this.props.toggleModal({type: "TOGGLE_MODAL"})
   }
 
   getModal(){
@@ -58,18 +51,29 @@ class App extends Component {
   }
 
   render() {
+    let {showModal} = this.props.stateAsProp.modalReducer
+
     return (
       <div className="App">
         <h1>Make Appointment Below:</h1>
         {this.getApptTimes()}
-        {this.state.showModal ? this.getModal() : null}
+        {showModal ? this.getModal() : null}
       </div>
     );
   }
 }
 
+//the way this is currently setup, simply gives the entirety of the state to this container component.
+//you could also return something like state.property to only pass in a specific piece of the state.
 function mapStateToProps(state) {
    return { stateAsProp: state };
 }
 
-export default connect(mapStateToProps)(App);
+
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({updateAppointment, toggleModal, addAppointment}, dispatch)
+}
+
+//this is what allows us to access the disptch function via props.
+//All connected components have access to dispatch in this way.
+export default connect(mapStateToProps, mapDispatchToProps)(App);

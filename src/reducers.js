@@ -6,7 +6,7 @@ let apptTimes = [9,10,11,12,1,2,3,4,5];
 //allows easy updates to data requested for each time slot
 let apptObjects = apptTimes.map( n => ({time: n, name: "", phoneNumber: ""}))
 
-
+//using es6 default args to set initial state
 function makeAppointmentReducer(state = {appointments: apptObjects, apptToEdit: {name: "", phoneNumber: "", time: "", index: ""}}, action) {
 
 
@@ -31,8 +31,22 @@ function makeAppointmentReducer(state = {appointments: apptObjects, apptToEdit: 
   }
 }
 
+//toggle modal reducer
+function modalReducer(state = {showModal: false}, action){
+
+  switch (action.type){
+    case 'TOGGLE_MODAL':
+      return {
+        showModal: !state.showModal
+      }
+    default:
+      return state
+  }
+
+}
+
 
 //to enable easy addition of future reducers
 export const rootReducer = combineReducers({
-   makeAppointmentReducer
+   makeAppointmentReducer, modalReducer
 });
